@@ -8,6 +8,7 @@ const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 const { profiles, handleProfileUpdate } = require('./controllers/profile');
 const { images } = require('./controllers/image');
+const auth = require('./controllers/authorization');
 
 const db = knex({
     client: 'pg',
@@ -26,10 +27,10 @@ app.use(cors())
 app.use(morgan('combined'))
 
 app.post('/signin', signin.signinAuthentication(db, bcrypt))
-app.post('/register',(req,res) => {register.handleRegister(req,res,db,bcrypt)})
-app.get('/profile/:id', (req,res)=> {profiles(req,res,db)})
-app.post('/profile/:id', (req,res)=> {handleProfileUpdate(req,res,db)})
-app.put('/image', (req,res) => {images(req,res,db)})
+app.post('/register', auth.requireAuth,(req,res) => {register.handleRegister(req,res,db,bcrypt)})
+app.get('/profile/:id', auth.requireAuth, (req,res)=> {profiles(req,res,db)})
+app.post('/profile/:id', auth.requireAuth, (req,res)=> {handleProfileUpdate(req,res,db)})
+app.put('/image', auth.requireAuth, (req,res) => {images(req,res,db)})
 
 app.listen(3000, () =>{
     console.log('app is running')

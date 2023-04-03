@@ -13,8 +13,10 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=smart-brain
       - POSTGRES_HOST=postgres
+      - REDIS_URI=redis://redis:6379
     links: 
       - postgres
+      - redis
     ports: 
       - "3000:3000"
     volumes:
@@ -30,4 +32,13 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=smart-brain
       - POSTGRES_HOST=postgres
+  
+  #redis
+  redis:
+    image: redis
+    ports: 
+      - "6379:6379"
+    environment:
+      - REDIS_PORT=6379
+  
  
